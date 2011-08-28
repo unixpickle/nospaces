@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ $# -le 0 ]; then
+	echo "Usage: nospaces executable_path [--32bit]"
+	exit
+fi
+
+if [ $# -eq 2 ]
+then
+	if [ $2 = "--32bit" ]
+	then
+		DYLD_INSERT_LIBRARIES=/Library/Frameworks/WindowPatch32.framework/Versions/A/WindowPatch
+	else
+		echo "Unknown argument: $2"
+		exit
+	fi
+else
+	# 64-bit mode
+	DYLD_INSERT_LIBRARIES=/Library/Frameworks/WindowPatch64.framework/Versions/A/WindowPatch
+fi
+
+if [ -f $DYLD_INSERT_LIBRARIES ]
+then
+	export DYLD_INSERT_LIBRARIES
+	"$1"
+else
+	echo "No library found: $DYLD_INSERT_LIBRARIES !!!"
+fi
